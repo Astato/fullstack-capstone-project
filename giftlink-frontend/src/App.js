@@ -6,6 +6,7 @@ import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterComponent/RegisterPage';
+import DetailsPage from './components/DetailsPage/DetailsPage';
 function App() {
 
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/app" element={<MainPage />} />
           <Route path="/app/login" element={<LoginPage/>} />
           <Route path="/app/register" element={<RegisterPage />} />
+          <Route path="/app/product/:productId" element={<DetailsPage/>} />
         </Routes>
         </>
   );
