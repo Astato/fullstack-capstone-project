@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import {urlConfig} from '../../config';
+import {useAppContext} from "../../context/AuthContext"
+import {useNavigate} from "react-router-dom";
+
 
 import './RegisterPage.css';
 
@@ -7,9 +11,28 @@ function RegisterPage() {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState("")
+    
+    const {setIsLoggedIn} = useAppContext()
+    const navigate = useNavigate()
     //insert code here to create useState hook variables for firstName, lastName, email, password
     const handleRegister = async () => {
-        console.log("Register invoked")
+       const response = await fetch(urlConfig.backendUrl + "/api/auth/register", {method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({firstName:firstName, lastName:lastName, email:email, password:password})})
+       if(response.status === 200){
+        const data = await response.json()
+        console.log(data, "DATA")
+        if(data.authToken){
+            sessionStorage.setItem("auth-token", data.authToken)
+            sessionStorage.setItem("name", firstName)
+            sessionStorage.setItem("email", email)
+            setIsLoggedIn(true)
+            navigate("/")
+
+        } 
+
+       } else{
+        return setError(response.status)
+       }
     }
     // insert code here to create handleRegister function and include console.log
 
@@ -52,16 +75,17 @@ function RegisterPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
+                                <div className="text-danger">{error}</div>
+
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="email" className="form-label">Email</label>
+                                <label htmlFor="password" className="form-label">Password</label>
                                 <input
-                                    id="email"
-                                    type="text"
+                                    id="password"
+                                    type="password"
                                     className="form-control"
-                                    placeholder="Enter your email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
                             <button className="btn btn-primary w-100 mb-3" onClick={handleRegister}>Register</button>

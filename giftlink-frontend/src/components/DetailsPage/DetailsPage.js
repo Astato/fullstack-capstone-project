@@ -92,20 +92,20 @@ return (
                         )}
                     </div>
                     // Task 6: Display gift details
-                    	<p><strong>Category:</strong> 
-                        gift.category
+                    	<p><strong>Category: </strong> 
+                        {gift.category}
 			</p>
-                    	<p><strong>Condition:</strong> 
-                        gift.condition
+                    	<p><strong>Condition: </strong> 
+                        {gift.condition}
                     	</p>
-                    	<p><strong>Date Added:</strong> 
-                        gift.date
+                    	<p><strong>Date Added: </strong> 
+                        {new Date(gift.date_added).toLocaleDateString()}
                         </p>
-                    	<p><strong>Age (Years):</strong> 
-                        gift.years
+                    	<p><strong>Age (Years): </strong> 
+                        {gift.age_years}
                     	</p>
-                    	<p><strong>Description:</strong> 
-                        gift.description
+                    	<p><strong>Description: </strong> 
+                        {gift.description}
                     	</p>
                 </div>
             </div>

@@ -45,9 +45,9 @@ router.post('/register', validateData(), async (req, res) => {
                 id: newUser.insertedId,
             },
         };
-        const authtoken = jwt.sign(payload, JWT_SECRET);
+        const authToken = jwt.sign(payload, JWT_SECRET);
         logger.info("User registered");
-        return res.json({authtoken, email})
+        return res.json({authToken, email})
   
 
     } catch (error) {
