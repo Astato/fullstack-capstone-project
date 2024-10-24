@@ -17,22 +17,28 @@ function RegisterPage() {
     const navigate = useNavigate()
     //insert code here to create useState hook variables for firstName, lastName, email, password
     const handleRegister = async () => {
-       const response = await fetch(urlConfig.backendUrl + "/api/auth/register", {method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({firstName:firstName, lastName:lastName, email:email, password:password})})
-       if(response.status === 200){
-        const data = await response.json()
-        if(data.authToken){
-            sessionStorage.setItem("auth-token", data.authToken)
-            sessionStorage.setItem("name", firstName)
-            sessionStorage.setItem("email", email)
-            setIsLoggedIn(true)
-            navigate("/")
-
-        } 
-
-       } else{
-        const data = await response.json()
-        return setError(data.error)
-       }
+        try {
+            
+            const response = await fetch(urlConfig.backendUrl + "/api/auth/register", {method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({firstName:firstName, lastName:lastName, email:email, password:password})})
+            if(response.ok){
+                const data = await response.json()
+                if(data.authToken){
+                    sessionStorage.setItem("auth-token", data.authToken)
+                    sessionStorage.setItem("name", firstName)
+                    sessionStorage.setItem("email", email)
+                    setIsLoggedIn(true)
+                    navigate("/")
+                    
+                } 
+                
+            } else{
+                const data = await response.json()
+                return setError(data.error)
+            }
+        } catch (error) {
+            console.log(error)
+            return;   
+        }
     }
     // insert code here to create handleRegister function and include console.log
 

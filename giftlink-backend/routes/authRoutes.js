@@ -20,11 +20,15 @@ const validateData = () => [
     body("email").isEmail(),
      body("lastName").notEmpty()]
 
+const validateLogin = () => [
+    body("email").isEmail(),
+    body("password").notEmpty()
+]
 
 router.post('/register', validateData(), async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        res.json({error:"invalid input"})
+        return res.json({error:"invalid input"})
     }
     try {
         const db = await connectToDatabase()
@@ -34,7 +38,7 @@ router.post('/register', validateData(), async (req, res) => {
             return res.json({error:"Email already registered"})
         }
         const email = req.body.email
-        const hash = bcryptjs.hash(req.body.password, 10)
+        const hash = await bcryptjs.hash(req.body.password, 10)
 
             const newUser = await collection.insertOne({
             email: email,
@@ -59,17 +63,17 @@ router.post('/register', validateData(), async (req, res) => {
 });
 
 
-router.póst("/login", validateData(), async(req,res) => {
+router.post("/login", validateLogin(), async(req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        res.json({message:"invalid input or missing data"})
+       return  res.json({error:"invalid input or missing data"})
     }
     try {
         const db = await connectToDatabase()
         const collection = db.collection("users")
         const user = await collection.findOne({ email: req.body.email });
         if(user){
-            const compare = bcryptjs.compare(req.body.password, user.password)
+            const compare = await bcryptjs.compare(req.body.password, user.password)
             if(!compare){
                 logger.error("Password do not match")
                 return res.status(404).json({error:"Wrong password"})
@@ -78,7 +82,7 @@ router.póst("/login", validateData(), async(req,res) => {
             const email = user.email;
             const payload = {
                 user:{
-                    id: user._id.toString()
+                    id: user._id
                 }
             }
             const authToken = jwt.sign(payload, JWT_SECRET)
@@ -86,11 +90,11 @@ router.póst("/login", validateData(), async(req,res) => {
             return res.json({authToken, username, email})
         } else{
             logger.error("Email not found")
-            res.status(404).json({error:"Email not found"})
+            return res.status(404).json({error:"Email not found"})
         }
         
     } catch (error) {
-        return res.status(500).send('Internal server error');
+        return res.status(500).json({error:'Internal server error'});
     }
 })
 
