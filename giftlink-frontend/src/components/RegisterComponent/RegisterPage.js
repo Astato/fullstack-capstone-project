@@ -20,7 +20,6 @@ function RegisterPage() {
        const response = await fetch(urlConfig.backendUrl + "/api/auth/register", {method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({firstName:firstName, lastName:lastName, email:email, password:password})})
        if(response.status === 200){
         const data = await response.json()
-        console.log(data, "DATA")
         if(data.authToken){
             sessionStorage.setItem("auth-token", data.authToken)
             sessionStorage.setItem("name", firstName)
@@ -31,7 +30,8 @@ function RegisterPage() {
         } 
 
        } else{
-        return setError(response.status)
+        const data = await response.json()
+        return setError(data.error)
        }
     }
     // insert code here to create handleRegister function and include console.log
