@@ -1,7 +1,8 @@
 /*jshint esversion: 8 */
-const DBConnection = require("../models/db")
-const express = require("express")
-const router = express.Router()
+const DBConnection = require("../models/db");
+const express = require("express");
+const router = express.Router();
+
 router.get('/', async (req, res) => {
     try {
         // Task 1: Connect to MongoDB and store connection to db constant
